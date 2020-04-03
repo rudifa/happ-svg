@@ -31,13 +31,15 @@ export class MyPistil extends LitElement {
     this.radius = 5
     this.width = 3
     this.length = 50;
-    this.angle = 0;
+    this.angle = 30;
   }
 
   render() {
     return svg`<svg height="150" width="150">
-      <circle cx="${this.originX + this.length}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
-      <line x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
+      <g transform="rotate(${this.angle} ${this.originX} ${this.originY})">
+        <circle cx="${this.originX + this.length}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
+        <line x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
+      </g>
     </svg> `;
   }
 }
