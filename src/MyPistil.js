@@ -15,6 +15,10 @@ export class MyPistil extends LitElement {
 
   static get properties() {
     return {
+      originX: { type: Number },
+      originY: { type: Number },
+      radius: { type: Number },
+      width: { type: Number },
       length: { type: Number },
       angle: { type: Number }
     };
@@ -22,18 +26,18 @@ export class MyPistil extends LitElement {
 
   constructor() {
     super();
+    this.originX = 50;
+    this.originY = 50;
+    this.radius = 5
+    this.width = 3
     this.length = 50;
     this.angle = 0;
   }
 
-  __increment() {
-    this.counter += 1;
-  }
-
   render() {
     return svg`<svg height="150" width="150">
-      <circle cx="100" cy="50" r="5" stroke="black" stroke-width="4" fill-opacity=0.0 />
-      <line x1="50" y1="50" x2="97" y2="50" style="stroke:rgb(0,0,0);stroke-width:3" />
+      <circle cx="${this.originX + this.length}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
+      <line x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
     </svg> `;
   }
 }
