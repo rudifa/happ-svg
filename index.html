@@ -6,25 +6,31 @@
   <style>
     body { background: #fafafa; }
     happ-ui { width: 25%; height: 25%; }
+    my-pistil { width: 15%; height: 15%; }
+
   </style>
 </head>
 
 <body>
-  <div id="demo">
-    <happ-ui title="Color Wheel 1"></happ-ui>
+  <h3> HappUi</h3>
+
+  <div id="demo1">
+    <happ-ui title="Color Wheel 1">app-ui></happ-ui>
+  </div>
   
+  <div id="demo2">
+    <h3>My Pistil</h3>
+
+    <my-pistil title="Pistil 0">my-pistil</my-pistil> 
   </div>
 
   <script type="module">
     import './happ-ui.js';
+    import './my-pistil.js'
   </script>
 
 </body>
-</html>
 
-
-<!DOCTYPE html>
-<html>
 <style>
 #mydiv {
   position: absolute;
@@ -54,7 +60,7 @@
   
 <body>
 
-<h1>Draggable Element</h1>
+<h3>Draggable HappUi</h3>
   
 <happ-ui id="mywheel"></happ-ui>
 
