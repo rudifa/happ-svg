@@ -29,7 +29,7 @@ export class HappSvg extends LitElement {
     super();
     this.originX = 15.0;
     this.originY = 10.0;
-    this.radius = 1.0 //0.5;
+    this.radius = 0.5;
     this.width = 0.3;
     this.maxLength = 7.5;
     this.length0 = 5.0;
@@ -86,6 +86,17 @@ export class HappSvg extends LitElement {
         }
       break;
     }
+  }
+
+  pistilSvg() { return svg`   
+    ${this.pistils.map(
+      pistil => svg`
+        <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})" @click="${this.handleClick}">
+          <circle class="circle" id="circle0" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
+          <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
+        </g>
+      `)}
+    `; 
   }
 
   render() {
@@ -208,36 +219,8 @@ export class HappSvg extends LitElement {
         ]]> </script>
     
         <rect x="0" y="0" width="30" height="20" fill="#eee"/>
-<!-------
-        <rect class="static" fill="#888" x="2" y="4" width="6" height="2"/>
-        <rect class="draggable" fill="#007bff" x="2" y="4" width="6" height="2" transform="rotate(90, 5, 5) translate(10, 0)"/>
-     
-        <g class="draggable-group">
-          <ellipse fill="#ff00af" cx="5" cy="5" rx="3" ry="2" transform="translate(10, 0)"/>
-          <polygon fill="#ffa500" transform="rotate(15, 15, 15)" points="16.9 15.6 17.4 18.2 15 17 12.6 18.2 13.1 15.6 11.2 13.8 13.8 13.4 15 11 16.2 13.4 18.8 13.8"/>
-        </g>
 
-      
-        <g class="draggable-group">
-          <path stroke="#2bad7b" stroke-width="0.5" fill="none" d="M1 5C5 1 5 9 9 5" transform="translate(20)"/>
-          <text x="25" y="15" text-anchor="middle" font-size="3px" alignment-baseline="middle">Drag</text>
-        </g>
------->
-            
-      <g class="stretchable-group" id="pistil0" transform="rotate(${this.angle0} ${this.originX} ${this.originY})" @click="${this.handleClick}">
-        <circle class="circle" id="circle0" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
-        <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
-      </g>
-      
-      <g class="stretchable-group" id="pistil1" transform="rotate(${this.angle1} ${this.originX} ${this.originY})" @click="${this.handleClick}">
-        <circle class="circle" id="circle1" cx="${this.originX + this.length1}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
-        <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length1 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
-      </g>
-      
-      <g class="stretchable-group" id="pistil2" transform="rotate(${this.angle2} ${this.originX} ${this.originY})" @click="${this.handleClick}">
-        <circle class="circle" id="circle2" cx="${this.originX + this.length2}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
-        <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length2 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
-      </g>
+      ${this.pistilSvg()}
 
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')"/>
       <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
