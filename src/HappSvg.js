@@ -20,6 +20,8 @@ export class HappSvg extends LitElement {
       angle0: { type: Number },
       angle1: { type: Number },
       angle2: { type: Number },
+
+      pistils: { type: Array }
     };
   }
 
@@ -39,6 +41,12 @@ export class HappSvg extends LitElement {
     this.angle0 = 30;
     this.angle1 = 150;
     this.angle2 = 270;
+
+    this.pistils = [
+      { angle: 30, length: 5.0 },
+      { angle: 150, length: 5.0 },
+      { angle: 270, length: 5.0 },
+    ];
   }
 
   handleClick(event) {
