@@ -29,7 +29,7 @@ export class HappSvg extends LitElement {
     super();
     this.originX = 15.0;
     this.originY = 10.0;
-    this.radius = 0.5;
+    this.radius = 1.5;
     this.width = 0.3;
     this.maxLength = 7.5;
     this.length0 = 5.0;
@@ -43,15 +43,26 @@ export class HappSvg extends LitElement {
     this.angle2 = 270;
 
     this.pistils = [
-      { id: "c0", angle: 30, length: 5.0 },
-      { id: "c1",angle: 150, length: 5.0 },
-      { id: "c2",angle: 270, length: 5.0 },
+      { id: "p0", angle: 30, length: 5.0 },
+      { id: "p1",angle: 150, length: 5.0 },
+      { id: "p2",angle: 270, length: 5.0 },
     ];
+  }
+
+  // UNCLEAR
+  pistilFor() {
+    console.log("pistilFor")
+    let id = "p1"
+    return id
+    return this.pistils.filter(e => e.id == id)
+  }
+
+  handleDown() {
+    alert(`handleDown`)
   }
 
   handleClick(event) {
     alert(`clicked ${event.target.id}`)
-    //this.length += 1;
     //console.log(event.target.id)
     return
 
@@ -92,9 +103,9 @@ export class HappSvg extends LitElement {
   pistilsSvg() { return svg`   
     ${this.pistils.map(
       pistil => svg`
-        <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})" @click="${this.handleClick}">
-          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
-          <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
+        <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
+          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  />
+          <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick}"/>
         </g>
       `)}
     `; 
@@ -138,8 +149,14 @@ export class HappSvg extends LitElement {
             return dl
         }          
           function makeDraggable(evt) {
+            console.log("makeDraggable")
             var svg = evt.target;
+            // @change=${e => this.handleDown(e, todo)}
+
+            // svg.addEventListener('mousedown', "${this.handleDown()}");
+
             svg.addEventListener('mousedown', startDrag);
+
             svg.addEventListener('mousemove', drag);
             svg.addEventListener('mouseup', endDrag);
             svg.addEventListener('mouseleave', endDrag);
@@ -185,8 +202,10 @@ export class HappSvg extends LitElement {
                 initialiseDragging(evt);
                 pos = getMousePosition(evt);
                 let dist = distanceToOrigin(pos);
-                //console.log(selectedElement.id, pos.x, pos.y, dist);     
-                console.log(selectedElement.id, evt.target.classList, pos.x, pos.y, dist);     
+
+                console.log("startDrag", selectedElement.id, pos.x, pos.y, dist); 
+
+                //console.log(selectedElement.id, evt.target.classList, pos.x, pos.y, dist);     
                 /*   */   
               }           
             }
@@ -203,7 +222,11 @@ export class HappSvg extends LitElement {
                   let dx = coord.x - offset.x;
                   let dy = coord.y - offset.y;
                   let d = deltaLength(${this.angle0}, offset, coord)
-                  console.log(evt.target.classList, d)
+                  let id = selectedElement.id
+                  //let d2 = deltaLength(${this.pistilFor().angle}, offset, coord)
+                  //let fnc = ${this.pistilFor()}
+                  //${this.angle0} = ${this.angle0} + 0.1 // readonly, just the value gets here
+                  console.log("drag", d, selectedElement.id, ".${this.angle0}.")
 
                   
                 } else {
