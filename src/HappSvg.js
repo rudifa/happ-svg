@@ -44,8 +44,8 @@ export class HappSvg extends LitElement {
 
     this.pistils = [
       { id: "p0", angle: 30, length: 5.0 },
-      { id: "p1",angle: 150, length: 5.0 },
-      { id: "p2",angle: 270, length: 5.0 },
+      { id: "p1", angle: 150, length: 5.0 },
+      { id: "p2", angle: 300, length: 5.0 },
     ];
 
     //var selectedElement, offset, transform;
@@ -57,11 +57,27 @@ export class HappSvg extends LitElement {
   getMousePosition(event) {
     var CTM = event.target.getScreenCTM();
     if (event.touches) { event = event.touches[0]; }
+    console.log("getMousePosition", event.clientX, event.clientY)
     return {
       x: (event.clientX - CTM.e) / CTM.a,
       y: (event.clientY - CTM.f) / CTM.d
     };
   }
+
+  getMousePosition_X(event) {
+    // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg
+    // Find your root SVG element
+    var svg = document.querySelector('svg');
+    // Create an SVGPoint for future math
+    var pt = svg.createSVGPoint();
+    // Get point in global SVG space
+    //function cursorPoint(evt){
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    //}
+  }
+
+
 
   // UNCLEAR
   pistilFor() {
@@ -110,7 +126,7 @@ export class HappSvg extends LitElement {
   }
 
   _onload(event) {
-    console.log('onload _makeDraggable', event)
+    console.log('onload ...', event)
     this._try = function() { console.log("_try")}
   }
 
@@ -153,10 +169,14 @@ export class HappSvg extends LitElement {
     }
   }
 
-  pistilsSvg() { return svg`   
+  pistilsSvg() { return svg` 
+    <svg xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 30 20"
+
+    >  
     ${this.pistils.map(
       pistil => svg`
-        <g class="stretchable-group" id="${pistil.id}" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
+              <g class="stretchable-group" id="${pistil.id}" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
           <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick} "/>
           <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  
             @mousedown="${this._mousedown}"
@@ -166,10 +186,26 @@ export class HappSvg extends LitElement {
           />
         </g>
       `)}
-    `; 
+
+
+      <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
+      <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
+      <rect  fill="#888" x="5" y="1" width="3" height="3" 
+
+      </svg>`
+    ; 
   }
 
+
   render() {
+    return svg`
+
+        ${this.pistilsSvg()}
+    `;
+     
+  }
+
+  render_0() {
     return svg`
 
         <svg xmlns="http://www.w3.org/2000/svg"
@@ -312,12 +348,14 @@ export class HappSvg extends LitElement {
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
       <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
       <rect  fill="#888" x="5" y="1" width="3" height="3" 
-      @mousedown="${this._mousedown}"
-      @mousemove="${this._mousemove}"
-      @mouseup="${this._mouseup}"
-      @mouseleave="${this._mouseleave}"
+     
        />
-
+       <!--
+       @mousedown="${this._mousedown}"
+       @mousemove="${this._mousemove}"
+       @mouseup="${this._mouseup}"
+       @mouseleave="${this._mouseleave}"
+       -->
     
     </svg>
       `;
