@@ -57,8 +57,9 @@ export class HappSvg extends LitElement {
     return this.pistils.filter(e => e.id == id)
   }
 
-  handleDown() {
-    alert(`handleDown`)
+  _mousedown(evt) {
+    //alert(`_mousedown`)
+    console.log('mousedown', evt)
   }
 
   handleClick(event) {
@@ -105,7 +106,7 @@ export class HappSvg extends LitElement {
       pistil => svg`
         <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
           <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  />
-          <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick}"/>
+          <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick} "/>
         </g>
       `)}
     `; 
@@ -127,7 +128,7 @@ export class HappSvg extends LitElement {
           }
         </style>
         
-        <script type="text/javascript"><![CDATA[
+        <script type="text/javascript">
 
           function distanceToOrigin(coord) {
             dx = ${this.originX} - coord.x
@@ -151,11 +152,18 @@ export class HappSvg extends LitElement {
           function makeDraggable(evt) {
             console.log("makeDraggable")
             var svg = evt.target;
-            // @change=${e => this.handleDown(e, todo)}
+            // @mousedown=${e => this._mousedown(e, todo)}  // syntax error
+            // @mousedown="${e => this._mousedown(e, todo)}"  // syntax error
 
-            // svg.addEventListener('mousedown', "${this.handleDown()}");
+            // svg.addEventListener('mousedown', this.handleDown);
 
-            svg.addEventListener('mousedown', startDrag);
+            // svg.addEventListener('mousedown', e => console.log("mouse down")) // this works
+
+            svg.addEventListener('mousedown', e => this.handleDown)  // has no effect
+
+            svg.addEventListener('mousedown', ${e => this._mousedown})  // has no effect
+
+            svg.addEventListener('mousedown', startDrag); // OK
 
             svg.addEventListener('mousemove', drag);
             svg.addEventListener('mouseup', endDrag);
@@ -240,14 +248,15 @@ export class HappSvg extends LitElement {
               selectedElement = false;
             }
           }
-        ]]> </script>
+         </script>
     
         <rect x="0" y="0" width="30" height="20" fill="#eee"/>
 
       ${this.pistilsSvg()}
 
-      <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')"/>
+      <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
       <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
+      <rect  fill="#888" x="5" y="1" width="1" height="1" @mousedown="${this._mousedown}" />
 
     </svg>
       `;
