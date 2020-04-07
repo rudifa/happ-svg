@@ -54,6 +54,15 @@ export class HappSvg extends LitElement {
 
   }
 
+  getMousePosition(event) {
+    var CTM = event.target.getScreenCTM();
+    if (event.touches) { event = event.touches[0]; }
+    return {
+      x: (event.clientX - CTM.e) / CTM.a,
+      y: (event.clientY - CTM.f) / CTM.d
+    };
+  }
+
   // UNCLEAR
   pistilFor() {
     console.log("pistilFor")
@@ -71,7 +80,15 @@ export class HappSvg extends LitElement {
 
   _mousedown(event) {
     //alert(`_mousedown`)
-    console.log('mousedown startDrag', event)
+    console.log('mousedown startDrag event', event)
+    let target = event.target
+    console.log('mousedown startDrag target', target)
+    var CTM = target.getScreenCTM();
+    console.log('mousedown startDrag CTM', CTM)
+
+    let mousePos = this.getMousePosition(event)
+    console.log('mousedown startDrag mousePos', mousePos)
+
   }
 
   _mousemove(event) {
@@ -81,15 +98,15 @@ export class HappSvg extends LitElement {
 
   _mouseup(event) {
     //alert(`_mouseup`)
-    console.log('mouseup endDrag', event)
+    //console.log('mouseup endDrag', event)
   }
 
   _mouseleave(event) {
     //alert(`_mouseleave`)
-    console.log('mouseleave endDrag', event)
-    console.log('mouseleave endDrag', typeof(this._try))
-    console.log('mouseleave endDrag', this.offset)
-    //his._try()
+    //console.log('mouseleave endDrag', event)
+    //console.log('mouseleave endDrag', typeof(this._try))
+   //console.log('mouseleave endDrag', this.offset)
+    //this._try()
   }
 
   _onload(event) {
@@ -139,9 +156,14 @@ export class HappSvg extends LitElement {
   pistilsSvg() { return svg`   
     ${this.pistils.map(
       pistil => svg`
-        <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
-          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  />
+        <g class="stretchable-group" id="${pistil.id}" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
           <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick} "/>
+          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  
+            @mousedown="${this._mousedown}"
+            @mousemove="${this._mousemove}"
+            @mouseup="${this._mouseup}"
+            @mouseleave="${this._mouseleave}"
+          />
         </g>
       `)}
     `; 
@@ -238,7 +260,7 @@ export class HappSvg extends LitElement {
               } else if (evt.target.parentNode.classList.contains('draggable-group')) {
                 selectedElement = evt.target.parentNode;
                 initialiseDragging(evt);
-              } else if (evt.target.classList.contains('circle')) {
+              } else if (evt.target.classList.contains('DISABLE_circle')) {
                 selectedElement = evt.target;
                 initialiseDragging(evt);
                 pos = getMousePosition(evt);
