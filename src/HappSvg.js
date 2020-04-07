@@ -11,16 +11,6 @@ export class HappSvg extends LitElement {
       radius: { type: Number },
       width: { type: Number },
       maxLength: { type: Number },
-      length0: { type: Number },
-      length1: { type: Number },
-      length2: { type: Number },
-      increment0: { type: Number },
-      increment1: { type: Number },
-      increment2: { type: Number },
-      angle0: { type: Number },
-      angle1: { type: Number },
-      angle2: { type: Number },
-
       pistils: { type: Array }
     };
   }
@@ -29,29 +19,18 @@ export class HappSvg extends LitElement {
     super();
     this.originX = 15.0;
     this.originY = 10.0;
-    this.radius = 1.5;
+    this.radius = 1.0;
     this.width = 0.3;
-    this.maxLength = 7.5;
-    this.length0 = 5.0;
-    this.length1 = 5.0;
-    this.length2 = 5.0;
-    this.increment0 = 0.5;
-    this.increment1 = 0.5;
-    this.increment2 = 0.5;
-    this.angle0 = 30;
-    this.angle1 = 150;
-    this.angle2 = 270;
+    this.maxLength = 7.0;
 
     this.pistils = [
-      { id: "p0", angle: 30, length: 5.0 },
-      { id: "p1", angle: 150, length: 5.0 },
-      { id: "p2", angle: 300, length: 5.0 },
+      { id: "p0", angle: 30, length: 5.0, increment: 0.5 },
+      { id: "p1", angle: 150, length: 5.0, increment: 0.5 },
+      { id: "p2", angle: 270, length: 5.0, increment: 0.5 },
     ];
 
-    //var selectedElement, offset, transform;
     this.selectedElement = "x";
     this.offset = 123;
-
   }
 
   getMousePosition(event) {
@@ -75,16 +54,6 @@ export class HappSvg extends LitElement {
       pt.x = evt.clientX; pt.y = evt.clientY;
       return pt.matrixTransform(svg.getScreenCTM().inverse());
     //}
-  }
-
-
-
-  // UNCLEAR
-  pistilFor() {
-    console.log("pistilFor")
-    let id = "p1"
-    return id
-    return this.pistils.filter(e => e.id == id)
   }
 
 
@@ -130,13 +99,32 @@ export class HappSvg extends LitElement {
     this._try = function() { console.log("_try")}
   }
 
-  handleClick(event) {
-    alert(`clicked ${event.target.id}`)
+  _handleClick(event) {
+    // alert(`clicked ${event.target.id}`)
     //console.log(event.target.id)
-    return
 
+    let pistilx = this.pistils.filter(p => p.id == event.target.id)
+   // console.log(event.target.id, pistil)
+
+    this.pistils = this.pistils.map((pistil) => {
+      if (pistil.id == event.target.id) {
+        pistil.length = pistil.length + pistil.increment;
+        if (pistil.length > this.maxLength) {
+          pistil.length = this.maxLength 
+          pistil.increment = - pistil.increment
+        } else if (pistil.length < this.radius) {
+          pistil.length = this.radius 
+          pistil.increment = - pistil.increment
+        }
+        console.log(event.target.id, pistil)
+      }
+      return pistil;
+    })
+
+
+    return
     switch (event.target.id) {
-      case "circle0":
+      case "p0":
         this.length0 += this.increment0
         if (this.length0 >= this.maxLength) {
           this.length0 = this.maxLength
@@ -172,24 +160,26 @@ export class HappSvg extends LitElement {
   pistilsSvg() { return svg` 
     <svg xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 30 20"
-
+    @onload="${e => this._onload(e)}"
     >  
     ${this.pistils.map(
       pistil => svg`
               <g class="stretchable-group" id="${pistil.id}" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})">
-          <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this.handleClick} "/>
-          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  
-            @mousedown="${this._mousedown}"
+          <line id="${pistil.id}" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + pistil.length - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" @click="${this._handleClick} "/>
+          <circle class="circle" id="${pistil.id}" cx="${this.originX + pistil.length}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0  
+            @mousedown="${e => this._mousedown(e)}"
             @mousemove="${this._mousemove}"
             @mouseup="${this._mouseup}"
             @mouseleave="${this._mouseleave}"
+            @click="${this._handleClick}"
+
           />
         </g>
       `)}
 
 
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
-      <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
+      <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this._handleClick}"/>
       <rect  fill="#888" x="5" y="1" width="3" height="3" 
 
       </svg>`
@@ -322,8 +312,6 @@ export class HappSvg extends LitElement {
                   let dy = coord.y - offset.y;
                   let d = deltaLength(${this.angle0}, offset, coord)
                   let id = selectedElement.id
-                  //let d2 = deltaLength(${this.pistilFor().angle}, offset, coord)
-                  //let fnc = ${this.pistilFor()}
                   //${this.angle0} = ${this.angle0} + 0.1 // readonly, just the value gets here
                   console.log("drag", d, selectedElement.id, ".${this.angle0}.")
 
@@ -346,7 +334,7 @@ export class HappSvg extends LitElement {
       ${this.pistilsSvg()}
 
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
-      <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
+      <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this._handleClick}"/>
       <rect  fill="#888" x="5" y="1" width="3" height="3" 
      
        />
