@@ -43,17 +43,18 @@ export class HappSvg extends LitElement {
     this.angle2 = 270;
 
     this.pistils = [
-      { angle: 30, length: 5.0 },
-      { angle: 150, length: 5.0 },
-      { angle: 270, length: 5.0 },
+      { id: "c0", angle: 30, length: 5.0 },
+      { id: "c1",angle: 150, length: 5.0 },
+      { id: "c2",angle: 270, length: 5.0 },
     ];
   }
 
   handleClick(event) {
-    return
-    //alert("clicked")
+    alert(`clicked ${event.target.id}`)
     //this.length += 1;
     //console.log(event.target.id)
+    return
+
     switch (event.target.id) {
       case "circle0":
         this.length0 += this.increment0
@@ -88,11 +89,11 @@ export class HappSvg extends LitElement {
     }
   }
 
-  pistilSvg() { return svg`   
+  pistilsSvg() { return svg`   
     ${this.pistils.map(
       pistil => svg`
         <g class="stretchable-group" id="pistil0" transform="rotate(${pistil.angle} ${this.originX} ${this.originY})" @click="${this.handleClick}">
-          <circle class="circle" id="circle0" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
+          <circle class="circle" id="${pistil.id}" cx="${this.originX + this.length0}" cy="${this.originY}" r="${this.radius}" stroke="black" stroke-width="${this.width}" fill-opacity=0.0 />
           <line id="l0" x1="${this.originX}" y1="${this.originY}" x2="${this.originX + this.length0 - this.radius}" y2="${this.originY}" style="stroke:rgb(0,0,0);stroke-width:${this.width}" />
         </g>
       `)}
@@ -220,7 +221,7 @@ export class HappSvg extends LitElement {
     
         <rect x="0" y="0" width="30" height="20" fill="#eee"/>
 
-      ${this.pistilSvg()}
+      ${this.pistilsSvg()}
 
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')"/>
       <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
