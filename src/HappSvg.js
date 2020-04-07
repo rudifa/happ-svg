@@ -47,6 +47,11 @@ export class HappSvg extends LitElement {
       { id: "p1",angle: 150, length: 5.0 },
       { id: "p2",angle: 270, length: 5.0 },
     ];
+
+    //var selectedElement, offset, transform;
+    this.selectedElement = "x";
+    this.offset = 123;
+
   }
 
   // UNCLEAR
@@ -57,9 +62,39 @@ export class HappSvg extends LitElement {
     return this.pistils.filter(e => e.id == id)
   }
 
-  _mousedown(evt) {
+
+  // svg.addEventListener('mousedown', startDrag); // OK
+  // svg.addEventListener('mousemove', drag);
+  // svg.addEventListener('mouseup', endDrag);
+  // svg.addEventListener('mouseleave', endDrag);
+
+
+  _mousedown(event) {
     //alert(`_mousedown`)
-    console.log('mousedown', evt)
+    console.log('mousedown startDrag', event)
+  }
+
+  _mousemove(event) {
+    //alert(`_mousedown`)
+    //console.log('mousemove drag', event)
+  }
+
+  _mouseup(event) {
+    //alert(`_mouseup`)
+    console.log('mouseup endDrag', event)
+  }
+
+  _mouseleave(event) {
+    //alert(`_mouseleave`)
+    console.log('mouseleave endDrag', event)
+    console.log('mouseleave endDrag', typeof(this._try))
+    console.log('mouseleave endDrag', this.offset)
+    //his._try()
+  }
+
+  _onload(event) {
+    console.log('onload _makeDraggable', event)
+    this._try = function() { console.log("_try")}
   }
 
   handleClick(event) {
@@ -117,7 +152,9 @@ export class HappSvg extends LitElement {
 
         <svg xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 30 20"
-        onload="makeDraggable(evt)">
+        onload="makeDraggable(evt)"
+        @onload="$this._onload"
+        >
 
         <style>
           .static {
@@ -156,15 +193,11 @@ export class HappSvg extends LitElement {
             // @mousedown="${e => this._mousedown(e, todo)}"  // syntax error
 
             // svg.addEventListener('mousedown', this.handleDown);
-
             // svg.addEventListener('mousedown', e => console.log("mouse down")) // this works
-
-            svg.addEventListener('mousedown', e => this.handleDown)  // has no effect
-
-            svg.addEventListener('mousedown', ${e => this._mousedown})  // has no effect
+            // svg.addEventListener('mousedown', e => this.handleDown)  // has no effect
+            // svg.addEventListener('mousedown', ${e => this._mousedown})  // has no effect
 
             svg.addEventListener('mousedown', startDrag); // OK
-
             svg.addEventListener('mousemove', drag);
             svg.addEventListener('mouseup', endDrag);
             svg.addEventListener('mouseleave', endDrag);
@@ -256,8 +289,14 @@ export class HappSvg extends LitElement {
 
       <rect  fill="#888" x="1" y="1" width="1" height="1" onclick="alert('You have clicked the rect.')" />
       <rect id="rect.3.1" fill="#888" x="3" y="1" width="1" height="1" @click="${this.handleClick}"/>
-      <rect  fill="#888" x="5" y="1" width="1" height="1" @mousedown="${this._mousedown}" />
+      <rect  fill="#888" x="5" y="1" width="3" height="3" 
+      @mousedown="${this._mousedown}"
+      @mousemove="${this._mousemove}"
+      @mouseup="${this._mouseup}"
+      @mouseleave="${this._mouseleave}"
+       />
 
+    
     </svg>
       `;
   }
